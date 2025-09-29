@@ -1,57 +1,57 @@
-import { useState, useEffect } from 'react';
-import { message } from 'antd';
-import { calculateRisk } from './riskTierCalculator';
+import { useState, useMemo } from 'react';
 
-export default function useRiskCalculation() {
-  const [riskData, setRiskData] = useState([]);
-  const [loading, setLoading] = useState(true);
+export const useRiskCalculation = (formData) => {
+  const [riskTier, setRiskTier] = useState('Low');
+  const [riskScore, setRiskScore] = useState(0);
 
-  // Calculate risk scores and prepare dashboard data
-  const calculateRiskData = async () => {
-    try {
-      setLoading(true);
-      // In a real app, this would fetch from your API:
-      // const vendors = await api.get('/vendors');
-      
-      // Mock data - should match your actual vendor data structure
-      const mockVendors = [
-        { id: 1, name: 'Cloud Hosting Inc', lastAssessment: '2023-05-15', handlesPII: true },
-        { id: 2, name: 'Data Analytics Co', lastAssessment: '2023-06-20', businessCritical: true },
-        { id: 3, name: 'Email Service Ltd', lastAssessment: '2023-04-10', hasISO27001: true }
-      ];
-
-      const calculatedData = mockVendors.map(vendor => {
-        const riskLevel = calculateRisk(vendor);
-        return {
-          ...vendor,
-          riskLevel,
-          riskScore: getRiskScore(riskLevel),
-          lastUpdated: new Date().toISOString()
-        };
-      });
-
-      setRiskData(calculatedData);
-    } catch (error) {
-      message.error('Failed to calculate risk data');
-      console.error('Risk calculation error:', error);
-    } finally {
-      setLoading(false);
+  useMemo(() => {
+    if (!formData) {
+      setRiskTier('Low');
+      setRiskScore(0);
+      return;
     }
-  };
 
-  // Convert risk level to numerical score for visualization
-  const getRiskScore = (riskLevel) => {
-    const scores = { High: 3, Medium: 2, Low: 1 };
-    return scores[riskLevel] || 0;
-  };
+    let score = 0;
+    
+    // Financial Health Scoring (0-30 points)
+    if (formData.profitableLastTwoYears === 'no') score += 15;
+    if (formData.provideFinancialStatements === 'no') score += 10;
+    if (formData.provideFinancialStatements === 'uponRequest') score += 5;
+    if (formData.restructuringInfo) score += 5;
 
-  useEffect(() => {
-    calculateRiskData();
-  }, []);
+    // Security & Data Privacy Scoring (0-40 points)
+    if (formData.hasSecurityPolicy === 'no') score += 20;
+    if (!formData.securityAudits) score += 10;
+    if (formData.hasBCP === 'no') score += 10;
+
+    // Operational & Quality Management (0-15 points)
+    if (formData.hasQualityManagement === 'no') score += 10;
+    if (!formData.kpis) score += 5;
+
+    // Legal & Compliance (0-15 points)
+    if (formData.hasCodeOfConduct === 'no') score += 10;
+    if (formData.willingToSignAgreement === 'no') score += 15;
+    if (formData.willingToSignAgreement === 'withModifications') score += 5;
+
+    // Cap the score at 100
+    score = Math.min(score, 100);
+    setRiskScore(score);
+
+    // Determine risk tier based on score
+    if (score >= 80) {
+      setRiskTier('Critical');
+    } else if (score >= 60) {
+      setRiskTier('High');
+    } else if (score >= 40) {
+      setRiskTier('Medium');
+    } else {
+      setRiskTier('Low');
+    }
+  }, [formData]);
 
   return {
-    riskData,
-    loading,
-    refresh: calculateRiskData
+    riskTier,
+    riskScore,
+    isLoading: !formData
   };
-}
+};

@@ -1,31 +1,16 @@
-import { Box, Flex, Heading, Spacer, Button } from "@chakra-ui/react";
-import { Outlet } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+// src/components/DashboardLayout.js
+import { Flex, Box } from '@chakra-ui/react';
+import Sidebar from './Sidebar';
+//import Header from './Header';
 
-const DashboardLayout = () => {
-  const { logout } = useAuth();
-
+export default function DashboardLayout({ children }) {
   return (
-    <Box>
-      <Flex
-        p={4}
-        bg="purple.700"
-        color="white"
-        align="center"
-        justify="space-between"
-      >
-        <Heading size="md">GRCNova Dashboard</Heading>
-        <Spacer />
-        <Button onClick={logout} colorScheme="red" variant="outline">
-          Logout
-        </Button>
-      </Flex>
-
-      <Box p={6}>
-        <Outlet />
+    <Flex h="100vh">
+      <Sidebar />
+      <Box flex="1" overflow="auto">
+        <Header />
+        <Box p={6}>{children}</Box>
       </Box>
-    </Box>
+    </Flex>
   );
-};
-
-export default DashboardLayout;
+}
