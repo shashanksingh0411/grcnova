@@ -1,59 +1,53 @@
-import { useState, useEffect } from 'react';
-import { message } from 'antd';
-import { calculateRisk } from './riskTierCalculator';
+// hooks/useVendorData.js
+import { useState, useEffect } from "react";
+import { supabase } from "../../supabase";
 
-export default function useVendorData() {
-  const [vendors, setVendors] = useState([]);
+export default function useVendorData(vendorId) {
+  const [vendor, setVendor] = useState(null);
+  const [formData, setFormData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-
-  // Mock API call - replace with actual API implementation
-  const fetchVendors = async () => {
-    try {
-      setLoading(true);
-      // In a real app, this would be an API call:
-      // const response = await api.get('/vendors', { params: { search: searchTerm } });
-      
-      // Mock data
-      const mockVendors = [
-        { id: 1, name: 'Cloud Hosting Inc', serviceType: 'Infrastructure', handlesPII: true, hasSOC2: true },
-        { id: 2, name: 'Data Analytics Co', serviceType: 'Analytics', handlesPHI: true, businessCritical: true },
-        { id: 3, name: 'Email Service Ltd', serviceType: 'Communication', hasISO27001: true }
-      ];
-
-      // Filter by search term
-      const filtered = mockVendors.filter(v => 
-        v.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        v.serviceType.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-
-      // Add risk tier calculation
-      const withRisk = filtered.map(vendor => ({
-        ...vendor,
-        riskLevel: calculateRisk(vendor)
-      }));
-
-      setVendors(withRisk);
-    } catch (error) {
-      message.error('Failed to load vendors');
-      console.error('Error fetching vendors:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    fetchVendors();
-  }, [searchTerm]);
+    if (!vendorId) return;
 
-  const handleSearch = (value) => {
-    setSearchTerm(value);
-  };
+    const fetchVendorData = async () => {
+      setLoading(true);
 
-  return {
-    vendors,
-    loading,
-    handleSearch,
-    refresh: fetchVendors
-  };
+      // Fetch vendor details
+      const { data: vendorData, error: vendorError } = await supabase
+        .from("vendors")
+        .select("*")
+        .eq("id", vendorId)
+        .single();
+
+      if (vendorError) {
+        console.error("Error fetching vendor:", vendorError);
+        setLoading(false);
+        return;
+      }
+
+      setVendor(vendorData);
+
+      // Fetch latest onboarding form
+      const { data: form, error: formError } = await supabase
+        .from("vendor_onboarding_forms")
+        .select("form_data")
+        .eq("vendor_id", vendorId)
+        .order("submitted_at", { ascending: false })
+        .limit(1)
+        .single();
+
+      if (formError) {
+        console.error("Error fetching form:", formError);
+      } else {
+        setFormData(form?.form_data || null);
+      }
+
+      setLoading(false);
+    };
+
+    fetchVendorData();
+  }, [vendorId]);
+
+  return { vendor, formData, loading };
 }

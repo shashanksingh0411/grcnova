@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compliance Audit Readiness | ComplyAuto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --text: #333;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            color: var(--text);
+            line-height: 1.6;
+            background-color: #f9f9f9;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 2rem;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        nav ul li a:hover {
+            color: var(--secondary);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--secondary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .btn:hover {
+            background-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        /* Page Header */
+        .page-header {
+            padding: 7rem 0 2rem;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            text-align: center;
+        }
+        
+        .page-header h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+        }
+        
+        .breadcrumb li {
+            margin: 0 0.5rem;
+        }
+        
+        .breadcrumb li a {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+        
+        .breadcrumb li:not(:last-child)::after {
+            content: ">";
+            margin-left: 1rem;
+            color: var(--dark);
+        }
+        
+        /* Framework Tabs */
+        .framework-tabs {
+            padding: 3rem 0;
+            background-color: white;
+        }
+        
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .tab-btn {
+            padding: 1rem 1.5rem;
+            background-color: var(--light);
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .tab-btn.active {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .tab-btn:hover:not(.active) {
+            background-color: #d6dbdf;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .framework-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .framework-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .framework-icon {
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-right: 1rem;
+        }
+        
+        .framework-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+        
+        .framework-description {
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+        
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .requirement-card {
+            background-color: var(--light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .requirement-card h3 {
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+        }
+        
+        .readiness-checklist {
+            margin-top: 2rem;
+        }
+        
+        .readiness-checklist h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+        
+        .checklist-item input[type="checkbox"] {
+            margin-right: 0.8rem;
+            width: 18px;
+            height: 18px;
+        }
+        
+        /* How It Works */
+        .how-it-works {
+            padding: 5rem 0;
+            background-color: #f8f9fa;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .section-title p {
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .step-card {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+        }
+        
+        .step-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .step-number {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            height: 50px;
+            background-color: var(--secondary);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .step-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        /* Benefits Section */
+        .benefits {
+            padding: 5rem 0;
+            background-color: white;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .benefit-card {
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .benefit-icon {
+            font-size: 1.8rem;
+            color: var(--secondary);
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .benefit-text h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        /* CTA Section */
+        .cta {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta p {
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            font-size: 1.2rem;
+        }
+        
+        .cta .btn {
+            background-color: white;
+            color: var(--primary);
+            font-size: 1.1rem;
+            padding: 1rem 2rem;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-column ul li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-column ul li a:hover {
+            color: var(--secondary);
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-icons a {
+            color: white;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+        
+        .social-icons a:hover {
+            color: var(--secondary);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+            
+            .header-container {
+                padding: 1rem;
+            }
+            
+            .page-header h2 {
+                font-size: 2rem;
+            }
+            
+            .tabs-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <h1>Comply<span>Auto</span></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="solutions.html">Solutions</a></li>
+                    <li><a href="features.html">Features</a></li>
+                    <li><a href="#">Pricing</a></li>
+                    <li><a href="#">Resources</a></li>
+                </ul>
+            </nav>
+            <a href="#" class="btn">Request Demo</a>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h2>Compliance Audit Readiness</h2>
+            <ul class="breadcrumb">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="solutions.html">Solutions</a></li>
+                <li>Audit Readiness</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Framework Tabs -->
+    <section class="framework-tabs">
+        <div class="container">
+            <div class="tabs-container">
+                <button class="tab-btn active" data-tab="iso27001">ISO 27001</button>
+                <button class="tab-btn" data-tab="hipaa">HIPAA</button>
+                <button class="tab-btn" data-tab="gdpr">GDPR</button>
+                <button class="tab-btn" data-tab="pci">PCI DSS</button>
+            </div>
+            
+            <!-- ISO 27001 Content -->
+            <div class="tab-content active" id="iso27001-content">
+                <div class="framework-content">
+                    <div class="framework-header">
+                        <div class="framework-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h2 class="framework-title">ISO 27001 Information Security</h2>
+                    </div>
+                    <p class="framework-description">
+                        ISO 27001 is the international standard for information security management systems (ISMS). 
+                        It provides a framework for establishing, implementing, maintaining, and continually improving 
+                        information security management within an organization.
+                    </p>
+                    
+                    <h3>Key Requirements</h3>
+                    <div class="requirements-grid">
+                        <div class="requirement-card">
+                            <h3>Context Establishment</h3>
+                            <p>Define the scope, objectives, and stakeholders of your ISMS.</p>
+                        </div>
+                        <div class="requirement-card">
+                            <h3>Leadership & Policy</h3>
+                            <p>Establish information security policies and demonstrate leadership commitment.</p>
+                        </div>
+                        <div class="requirement-card">
+                            <h3>Risk Assessment</h3>
+                            <p>Identify and assess information security risks using a systematic approach.</p>
+                        </div>
+                        <div class="requirement-card">
+                            <h3>Risk Treatment</h3>
+                            <p>Select and implement appropriate controls to mitigate identified risks.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="readiness-checklist">
+                        <h3>Audit Readiness Checklist</h3>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="iso1">
+                            <label for="iso1">ISMS scope and boundaries documented</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="iso2">
+                            <label for="iso2">Information security policy established and communicated</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="iso3">
+                            <label for="iso3">Risk assessment methodology defined and implemented</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="iso4">
+                            <label for="iso4">Statement of Applicability prepared</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="iso5">
+                            <label for="iso5">Risk treatment plan implemented</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="iso6">
+                            <label for="iso6">Internal audit program established</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="iso7">
+                            <label for="iso7">Management review conducted</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="iso8">
+                            <label for="iso8">Continual improvement processes in place</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- HIPAA Content -->
+            <div class="tab-content" id="hipaa-content">
+                <div class="framework-content">
+                    <div class="framework-header">
+                        <div class="framework-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <h2 class="framework-title">HIPAA Compliance</h2>
+                    </div>
+                    <p class="framework-description">
+                        The Health Insurance Portability and Accountability Act (HIPAA) sets the standard for protecting 
+                        sensitive patient data in the United States. Any organization that handles protected health information 
+                        must ensure that all required physical, network, and process security measures are in place and followed.
+                    </p>
+                    
+                    <h3>Key Requirements</h3>
+                    <div class="requirements-grid">
+                        <div class="requirement-card">
+                            <h3>Privacy Rule</h3>
+                            <p>Standards for protecting individuals' medical records and personal health information.</p>
+                        </div>
+                        <div class="requirement-card">
+                            <h3>Security Rule</h3>
+                            <p>Administrative, physical, and technical safeguards for electronic protected health information.</p>
+                        </div>
+                        <div class="requirement-card">
+                            <h3>Breach Notification</h3>
+                            <p>Requirements for notifying individuals and authorities following a data breach.</p>
+                        </div>
+                        <div class="requirement-card">
+                            <h3>Enforcement Rule</h3>
+                            <p>Provisions relating to compliance investigations and penalties for violations.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="readiness-checklist">
+                        <h3>Audit Readiness Checklist</h3>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="hipaa1">
+                            <label for="hipaa1">Risk analysis completed and documented</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="hipaa2">
+                            <label for="hipaa2">Policies and procedures for security management developed</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="hipaa3">
+                            <label for="hipaa3">Workforce security training implemented</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="hipaa4">
+                            <label for="hipaa4">Access controls to ePHI established</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="hipaa5">
+                            <label for="hipaa5">Business associate agreements in place</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="hipaa6">
+                            <label for="hipaa6">Incident response plan developed and tested</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="hipaa7">
+                            <label for="hipaa7">Physical security safeguards implemented</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="hipaa8">
+                            <label for="hipaa8">Regular audits of system activity conducted</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- GDPR Content -->
+            <div class="tab-content" id="gdpr-content">
+                <div class="framework-content">
+                    <div class="framework-header">
+                        <div class="framework-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <h2 class="framework-title">GDPR Compliance</h2>
+                    </div>
+                    <p class="framework-description">
+                        The General Data Protection Regulation (GDPR) is a comprehensive data protection law that applies to 
+                        organizations processing personal data of individuals in the European Union. It emphasizes transparency, 
+                        security, and accountability by data processors and controllers.
+                    </p>
+                    
+                    <h3>Key Requirements</h3>
+                    <div class="requirements-grid">
+                        <div class="requirement-card">
+                            <h3>Lawful Basis for Processing</h3>
+                            <p>Identify and document lawful grounds for processing personal data.</p>
+                        </div>
+                        <div class="requirement-card">
+                            <h3>Data Subject Rights</h3>
+                            <p>Establish processes to handle data subject access requests and other rights.</p>
+                        </div>
+                        <div class="requirement-card">
+                            <h3>Data Protection by Design</h3>
+                            <p>Implement technical and organizational measures to integrate data protection into processing activities.</p>
+                        </div>
+                        <div class="requirement-card">
+                            <h3>Record of Processing Activities</h3>
+                            <p>Maintain detailed records of data processing activities.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="readiness-checklist">
+                        <h3>Audit Readiness Checklist</h3>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="gdpr1">
+                            <label for="gdpr1">Data mapping and inventory completed</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="gdpr2">
+                            <label for="gdpr2">Lawful basis for processing documented for all activities</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="gdpr3">
+                            <label for="gdpr3">Privacy notice updated to meet GDPR requirements</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="gdpr4">
+                            <label for="gdpr4">Processes for handling data subject requests established</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="gdpr5">
+                            <label for="gdpr5">Data Protection Impact Assessment process implemented</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="gdpr6">
+                            <label for="gdpr6">Data breach response plan developed and tested</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="gdpr7">
+                            <label for="gdpr7">Data Protection Officer appointed (if required)</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="gdpr8">
+                            <label for="gdpr8">Vendor management processes for data processors established</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PCI DSS Content -->
+            <div class="tab-content" id="pci-content">
+                <div class="framework-content">
+                    <div class="framework-header">
+                        <div class="framework-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <h2 class="framework-title">PCI DSS Compliance</h2>
+                    </div>
+                    <p class="framework-description">
+                        The Payment Card Industry Data Security Standard (PCI DSS) is a set of security standards designed to 
+                        ensure that all companies that accept, process, store, or transmit credit card information maintain 
+                        a secure environment to protect cardholder data.
+                    </p>
+                    
+                    <h3>Key Requirements</h3>
+                    <div class="requirements-grid">
+                        <div class="requirement-card">
+                            <h3>Secure Network</h3>
+                            <p>Install and maintain firewall configuration to protect cardholder data.</p>
+                        </div>
+                        <div class="requirement-card">
+                            <h3>Cardholder Data Protection</h3>
+                            <p>Protect stored cardholder data and encrypt transmission across open networks.</p>
+                        </div>
+                        <div class="requirement-card">
+                            <h3>Vulnerability Management</h3>
+                            <p>Regularly update anti-virus software and develop secure systems and applications.</p>
+                        </div>
+                        <div class="requirement-card">
+                            <h3>Access Control</h3>
+                            <p>Restrict access to cardholder data on a need-to-know basis with unique IDs.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="readiness-checklist">
+                        <h3>Audit Readiness Checklist</h3>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="pci1">
+                            <label for="pci1">Network diagram with cardholder data flows documented</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="pci2">
+                            <label for="pci2">Firewall and router configuration standards established</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="pci3">
+                            <label for="pci3">Cardholder data storage policies implemented and followed</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="pci4">
+                            <label for="pci4">Encryption of cardholder data during transmission</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="pci5">
+                            <label for="pci5">Anti-virus software deployed and regularly updated</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="pci6">
+                            <label for="pci6">Secure development processes for applications</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="pci7">
+                            <label for="pci7">Access control measures based on need-to-know</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="pci8">
+                            <label for="pci8">Regular testing of security systems and processes</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Audit Readiness Process</h2>
+                <p>We help you prepare for compliance audits with a systematic approach</p>
+            </div>
+            <div class="process-steps">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Gap Analysis</h3>
+                    <p>We assess your current state against framework requirements to identify gaps.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Remediation Planning</h3>
+                    <p>We develop a prioritized plan to address compliance gaps and weaknesses.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Implementation Support</h3>
+                    <p>We help implement necessary controls, policies, and procedures.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>Readiness Assessment</h3>
+                    <p>We conduct mock audits to validate your preparedness for the real assessment.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits">
+        <div class="container">
+            <div class="section-title">
+                <h2>Benefits of Audit Readiness</h2>
+                <p>Preparing in advance delivers significant advantages for your organization</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="benefit-text">
+                        <h3>Higher Success Rate</h3>
+                        <p>Organizations that prepare systematically have significantly higher audit pass rates.</p>
+                    </div>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="benefit-text">
+                        <h3>Cost Reduction</h3>
+                        <p>Identify and fix issues early, avoiding costly last-minute remediation.</p>
+                    </div>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="benefit-text">
+                        <h3>Time Savings</h3>
+                        <p>Streamlined processes reduce the time required for audit activities.</p>
+                    </div>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="benefit-text">
+                        <h3>Continuous Compliance</h3>
+                        <p>Maintain compliance between audits with ongoing monitoring and controls.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2>Prepare for Your Next Compliance Audit</h2>
+            <p>Our experts will help you navigate the complexities of ISO 27001, HIPAA, GDPR, and PCI DSS compliance</p>
+            <a href="#" class="btn">Schedule a Consultation</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>ComplyAuto</h3>
+                    <p>Intelligent compliance automation for modern enterprises.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Solutions</h3>
+                    <ul>
+                        <li><a href="#">Compliance Audit Readiness</a></li>
+                        <li><a href="#">Risk Management</a></li>
+                        <li><a href="#">Policy Management</a></li>
+                        <li><a href="#">Vendor Risk Management</a></li>
+                        <li><a href="#">Incident Response</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Case Studies</a></li>
+                        <li><a href="#">Webinars</a></li>
+                        <li><a href="#">Compliance Guides</a></li>
+                        <li><a href="#">Whitepapers</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Business Ave, Suite 500</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> info@complyauto.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 ComplyAuto. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tab functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTab = button.getAttribute('data-tab');
+                    
+                    // Remove active class from all buttons and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    button.classList.add('active');
+                    
+                    // Show corresponding content
+                    document.getElementById(`${targetTab}-content`).classList.add('active');
+                });
+            });
+            
+            // Header scroll effect
+            window.addEventListener('scroll', function() {
+                const header = document.querySelector('header');
+                if (window.scrollY > 50) {
+                    header.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+                } else {
+                    header.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
